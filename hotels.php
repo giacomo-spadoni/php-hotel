@@ -42,6 +42,12 @@ $hotels = [
 
 if (isset($_GET['parcheggio'])) {
     $filtroParcheggio = $_GET['parcheggio'];
+    $filtrovoto = $_GET['voto'];
+
+    $hotels = array_filter($hotels, function ($hotel) use ($filtrovoto) {
+        return $hotel["vote"] >= $filtrovoto;
+    });
+
     if ($filtroParcheggio == "si") {
         $hotels = array_filter($hotels, function ($hotel) {
             return $hotel['parking'] === true;
@@ -69,10 +75,19 @@ if (isset($_GET['parcheggio'])) {
 <body>
     <div id="app">
         <form action="hotels.php">
-            <select name="parcheggio" id="parcheggio">
+            <select name="parcheggio" id="parcheggio" required>
+                <option value="" selected>seleziona un opzione</option>
                 <option value="si">con parcheggio</option>
                 <option value="no">senza parcheggio</option>
                 <option value="entrambi">con e senza parcheggio</option>
+            </select>
+            <select name="voto" id="voto" required>
+                <option value="" selected>seleziona un opzione</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
             <button>cerca</button>
         </form>
@@ -93,7 +108,7 @@ if (isset($_GET['parcheggio'])) {
                         <td><?= $hotel["description"] ?></td>
                         <td><?= $hotel["parking"] ? "si" : "no" ?></td>
                         <td><?= $hotel["vote"] ?></td>
-                        <td><?= $hotel["distance_to_center"] ?></td>
+                        <td><?= $hotel["distance_to_center"] ?> Km</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
